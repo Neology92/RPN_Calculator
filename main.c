@@ -1,34 +1,7 @@
 #include "main.h"
 
 //	Autor:				Oskar Legner
-//	Data napisania:		28.01.2019	
-//
-//	Temat: Kalkulator RPN
-//
-//
 
-// Program - klakulator RPN 
-//	
-//	kalkulator wykonuje działania całkowitoliczbowe 
-// 	w zakresie int32
-//	Polecenia i liczby należy podawać na stdin
-//	Wprowadzane liczby także nie mogą wykraczać poza zakres int32
-//	Pamięć programu działa na zasadzie stosu, na którym umieszczane są kolejne podawane liczby
-//  Pojemność stosu określona jest w pliku funkcje.h w stałej symbolicznej "STACK_LIM"
-//
-//	Stos w programie jest napisany na zasadzie działania dwóch implementacji - listowej i tablicowej
-//	Aktualny sposób działania można zmienić w pliku nagłówkowym funkcje.h w stałej symbolicznej "IMPL"
-//
-//	Znaki interpretowane przez program
-//	'+', '-', '*', '/' 	Podstawowe działania na liczbach (2 z wierzchu stosu)
-//					f 	Wypisz cały stos				
-//					p 	Wypisz top stosu
-//					c   Wyczyść stos
-//					P 	Usuń wierzchni argument stosu
-//					r 	Zamień kolejnością dwa topowe argumenty
-//					d 	Duplikuj wierzchni argument
-//					q 	Wyjdź z programu
-//	
 int main(void)
 {	
 
@@ -65,7 +38,7 @@ int main(void)
 						result = buf2 + buf1;	// Dodaj 
 						push(&stos, result); 	// i umieść na szczycie
 					}else{
-						fprintf(stderr, "%s\n", "Zbyt mało liczb do wykonania operacji" );
+						fprintf(stderr, "%s\n", "Error: Zbyt mało liczb do wykonania operacji" );
 					}
 					break;
 
@@ -77,7 +50,7 @@ int main(void)
 						result = buf2 - buf1;	// Odejmij 
 						push(&stos, result); 	// i umieść na szczycie
 					}else{
-						fprintf(stderr, "%s\n", "Zbyt mało liczb do wykonania operacji" );
+						fprintf(stderr, "%s\n", "Error: Zbyt mało liczb do wykonania operacji" );
 					}
 					break;
 
@@ -89,7 +62,7 @@ int main(void)
 						result = buf2 * buf1;	// Pomnóż 
 						push(&stos, result); 	// i umieść na szczycie
 					}else{
-						fprintf(stderr, "%s\n", "Zbyt mało liczb do wykonania operacji" );
+						fprintf(stderr, "%s\n", "Error: Zbyt mało liczb do wykonania operacji" );
 					}
 					break;
 
@@ -98,10 +71,18 @@ int main(void)
 					{
 						pop(&stos, &buf1); // Ściągnij ze stosu		
 						pop(&stos, &buf2); // Dwie wartosci	
-						result = (int)(buf2 / buf1);	// Podziel 
-						push(&stos, result); 	// i umieść na szczycie
+						if(buf2)
+						{
+							result = (int)(buf2 / buf1);	// Podziel 
+							push(&stos, result); 	// i umieść na szczycie
+						}else{
+							fprintf(stderr, "%s\n", "Error: Nie można podzielić przez zero!" );
+							push(&stos, buf2);
+							push(&stos, buf1);
+						}
+
 					}else{
-						fprintf(stderr, "%s\n", "Zbyt mało liczb do wykonania operacji" );
+						fprintf(stderr, "%s\n", "Error: Zbyt mało liczb do wykonania operacji" );
 					}
 					break;
 
@@ -129,7 +110,7 @@ int main(void)
 				 		push(&stos, buf1);	// teraz połóż pobrane wartosci
 				 		push(&stos, buf2);	// w odwrotnej kolejności na stosie
 			 		}else{
-			 			fprintf(stderr,"%s\n", "Zbyt malo elementow na stosie." );
+			 			fprintf(stderr,"%s\n", "Error: Zbyt malo elementow na stosie." );
 			 		}
 
 			 		break;
@@ -143,7 +124,7 @@ int main(void)
 					}	
 					else
 					{
-						fprintf(stderr,"%s\n", "Nie ma czego duplikowac" );
+						fprintf(stderr,"%s\n", "Error: Nie ma czego duplikowac" );
 					}	
 			 		break;
 
@@ -160,7 +141,7 @@ int main(void)
 			 		break;
 
 			 	default:
-			 		fprintf(stderr,"%s\n", "Nieznane polecenie.");
+			 		fprintf(stderr,"%s\n", "Error: Nieznane polecenie.");
 			}// switch	
 		}// else
 	}// while
